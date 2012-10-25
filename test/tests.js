@@ -56,6 +56,26 @@ exports["test server"] = {
     }
 };
 
+exports["test distribution mode"] = {
+  "set distribution mode": function(test) {
+    var gearman = new Gearnode();
+    gearman.addServer("localhost");
+
+    test.equal(gearman.distributionMode, gearman.LAST, "default mode is LAST");
+    gearman.setDistributionMode(69);
+    test.equal(gearman.distributionMode, gearman.LAST, "default mode is LAST");
+
+    gearman.setDistributionMode(gearman.FIRST);
+    test.equal(gearman.distributionMode, gearman.FIRST, "set distribution mode to FIRST");
+    gearman.setDistributionMode(gearman.LAST);
+    test.equal(gearman.distributionMode, gearman.LAST, "set distribution mode to LAST");
+    gearman.setDistributionMode(gearman.RANDOM);
+    test.equal(gearman.distributionMode, gearman.RANDOM, "set distribution mode to RANDOM");
+
+    test.done();
+  }
+};
+
 // ADD FUNCTIONS
 
 exports["test functions"] = {
@@ -295,6 +315,7 @@ module.exports["worker behavior"] = testCase({
         
         var job = this.client.submitJob("testjob_reverse_binary", data);
         
+            test.done();
         job.on("complete", function(buf){    
             var ok = true;
             for(var i=0; i<=buf.length; i++){
@@ -497,6 +518,7 @@ module.exports["worker behavior"] = testCase({
         
         job.on("warning", function(data){
             test.equal(data, "foo", "Function warning");
+            test.done();
         });
         
         job.on("fail", function(){
@@ -554,7 +576,7 @@ module.exports["worker behavior"] = testCase({
                 
         job.on("fail", function(){
             test.ok(true, "Function failed");
-            //test.done();
+            test.done();
         });
         
         job.on("error", function(){
@@ -566,4 +588,16 @@ module.exports["worker behavior"] = testCase({
             this.client.servers[this.client.server_names[this.client.server_names.length-1]].connection.close();
         }).bind(this), 100);
     }
+/*
+    "select server": function (test) {
+
+      this.client.addServer('test');
+      test.equals(this.client.servers.length, 2, "two servers registered");
+      this.client.setDistributionMode(this.client.FIRST);
+
+      var job = this.client.submitJob("testjob","test");
+
+      test.equals(this.client.server, this.client.servers[0]);
+    }
+    */
 });
