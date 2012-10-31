@@ -71,6 +71,8 @@ exports["test distribution mode"] = {
     test.equal(gearman.distributionMode, gearman.LAST, "set distribution mode to LAST");
     gearman.setDistributionMode(gearman.RANDOM);
     test.equal(gearman.distributionMode, gearman.RANDOM, "set distribution mode to RANDOM");
+    gearman.setDistributionMode(gearman.CYCLE);
+    test.equal(gearman.distributionMode, gearman.CYCLE, "set distribution mode to CYCLE");
 
     test.done();
   }
